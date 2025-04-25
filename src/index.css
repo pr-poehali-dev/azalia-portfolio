@@ -2,69 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
-
 @layer base {
   :root {
-    --background: 36 30% 97%;
-    --foreground: 15 10% 15%;
-
-    --card: 36 30% 97%;
-    --card-foreground: 15 10% 15%;
-
-    --popover: 36 30% 97%;
-    --popover-foreground: 15 10% 15%;
-
-    --primary: 14 80% 50%;
-    --primary-foreground: 36 30% 97%;
-
-    --secondary: 30 33% 94%;
-    --secondary-foreground: 15 10% 15%;
-
-    --muted: 30 10% 92%;
-    --muted-foreground: 15 10% 40%;
-
-    --accent: 14 80% 96%;
-    --accent-foreground: 15 10% 15%;
-
+    --background: 40 30% 96%;
+    --foreground: 20 10% 10%;
+    
+    --card: 40 30% 98%;
+    --card-foreground: 20 10% 10%;
+    
+    --popover: 40 30% 98%;
+    --popover-foreground: 20 10% 10%;
+    
+    --primary: 14 80% 45%;
+    --primary-foreground: 40 30% 98%;
+    
+    --secondary: 35 75% 95%;
+    --secondary-foreground: 20 10% 10%;
+    
+    --muted: 35 10% 90%;
+    --muted-foreground: 20 10% 40%;
+    
+    --accent: 14 80% 45%;
+    --accent-foreground: 40 30% 98%;
+    
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 36 30% 97%;
+    --destructive-foreground: 40 30% 98%;
 
-    --border: 20 8% 90%;
-    --input: 20 8% 90%;
-    --ring: 14 80% 50%;
-
-    --radius: 0rem;
+    --border: 20 10% 85%;
+    --input: 20 10% 85%;
+    --ring: 14 80% 45%;
+    
+    --radius: 0.5rem;
   }
 
   .dark {
-    --background: 15 10% 10%;
-    --foreground: 36 20% 92%;
-
-    --card: 15 10% 10%;
-    --card-foreground: 36 20% 92%;
-
-    --popover: 15 10% 10%;
-    --popover-foreground: 36 20% 92%;
-
-    --primary: 14 70% 50%;
-    --primary-foreground: 36 33% 98%;
-
-    --secondary: 15 10% 18%;
-    --secondary-foreground: 36 20% 92%;
-
-    --muted: 15 10% 18%;
-    --muted-foreground: 36 10% 70%;
-
-    --accent: 15 10% 18%;
-    --accent-foreground: 36 20% 92%;
-
+    --background: 20 10% 10%;
+    --foreground: 40 30% 98%;
+    
+    --card: 20 10% 12%;
+    --card-foreground: 40 30% 98%;
+    
+    --popover: 20 10% 12%;
+    --popover-foreground: 40 30% 98%;
+    
+    --primary: 14 80% 45%;
+    --primary-foreground: 40 30% 98%;
+    
+    --secondary: 35 10% 20%;
+    --secondary-foreground: 40 30% 98%;
+    
+    --muted: 35 10% 20%;
+    --muted-foreground: 35 10% 70%;
+    
+    --accent: 14 80% 45%;
+    --accent-foreground: 40 30% 98%;
+    
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 36 20% 92%;
-
-    --border: 15 10% 20%;
-    --input: 15 10% 20%;
-    --ring: 14 70% 50%;
+    --destructive-foreground: 40 30% 98%;
+    
+    --border: 20 10% 25%;
+    --input: 20 10% 25%;
+    --ring: 14 80% 45%;
   }
 }
 
@@ -72,72 +70,37 @@
   * {
     @apply border-border;
   }
-
   body {
     @apply bg-background text-foreground;
-    font-family: 'DM Sans', sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
-
-  h1, h2, h3, h4, h5, h6 {
+  
+  h1, h2, h3, h4 {
     @apply font-serif;
   }
 }
 
-@layer utilities {
-  .font-sans {
-    font-family: 'DM Sans', system-ui, sans-serif;
+@layer components {
+  .container {
+    @apply px-4 md:px-6 mx-auto max-w-[1200px];
   }
   
-  .font-serif {
-    font-family: 'Playfair Display', Georgia, serif;
-  }
-  
-  .text-balance {
-    text-wrap: balance;
+  .asymmetric-layout {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16;
   }
   
   .fade-in {
-    @apply opacity-0 translate-y-4 transition-all duration-700 ease-out;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
   }
   
-  .fade-in.appear {
-    @apply opacity-100 translate-y-0;
+  .appear {
+    opacity: 1;
+    transform: translateY(0);
   }
-
+  
   .red-dot {
-    @apply w-4 h-4 rounded-full bg-primary inline-block;
-  }
-
-  .content-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-
-  @media (max-width: 768px) {
-    .content-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .asymmetric-layout {
-    display: grid;
-    grid-template-columns: 0.8fr 1.2fr;
-    gap: 2rem;
-  }
-
-  @media (max-width: 768px) {
-    .asymmetric-layout {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .title-with-dot {
-    @apply text-primary font-bold relative;
-  }
-
-  .title-with-dot::before {
-    content: "";
-    @apply w-3 h-3 rounded-full bg-primary absolute -left-5 top-1/2 transform -translate-y-1/2;
+    @apply inline-block bg-primary w-2 h-2 rounded-full;
   }
 }

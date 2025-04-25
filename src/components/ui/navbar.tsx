@@ -45,10 +45,11 @@ export function Navbar() {
           className="text-lg tracking-tighter hover:text-primary transition-colors"
         >
           <span className="font-bold">Азалия</span>
+          <span className="red-dot ml-1"></span>
         </Link>
         
         {/* Desktop menu */}
-        <div className="hidden md:flex items-center space-x-10">
+        <div className="hidden md:flex items-center space-x-8">
           {routes.map((route) => (
             <Link
               key={route.path}

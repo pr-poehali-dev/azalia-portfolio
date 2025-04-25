@@ -9,6 +9,7 @@ const Index = () => {
   useEffect(() => {
     // Scroll to top when page loads
     window.scrollTo(0, 0);
+    document.title = "Азалия | Портфолио творческой личности";
   }, []);
 
   return (

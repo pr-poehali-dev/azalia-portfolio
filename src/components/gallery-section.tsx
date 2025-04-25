@@ -1,80 +1,41 @@
 import { useEffect, useRef } from "react";
-import { ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 
-// Image data with unsplash links
-const galleryItems = [
+const projects = [
   {
-    image: "https://images.unsplash.com/photo-1611244419377-b0a760c19719?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
-    title: "Визуальная концепция",
-    number: "1",
+    id: "01",
+    title: "Серия «Отражения»",
+    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80",
+    category: "Живопись",
     delay: "0ms"
   },
   {
-    image: "https://images.unsplash.com/photo-1581343600721-f4ea1318eccc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80",
-    title: "Документальная серия",
-    number: "2",
-    delay: "100ms"
+    id: "02",
+    title: "Мини-фильм «Погружение»",
+    image: "https://images.unsplash.com/photo-1496440737103-cd596325d314?auto=format&fit=crop&w=800&q=80",
+    category: "Видео",
+    delay: "150ms"
   },
   {
-    image: "https://images.unsplash.com/photo-1617791160505-6f00504e3519?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1756&q=80",
-    title: "Художественный проект",
-    number: "3",
-    delay: "200ms"
-  },
-  {
-    image: "https://images.unsplash.com/photo-1585508855751-7122ff0acee3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1746&q=80",
-    title: "Фотодневник",
-    number: "4",
+    id: "03",
+    title: "Визуальный дневник",
+    image: "https://images.unsplash.com/photo-1508179719682-dbc62681c355?auto=format&fit=crop&w=800&q=80",
+    category: "Коллаж",
     delay: "300ms"
+  },
+  {
+    id: "04",
+    title: "Проект «Сезоны»",
+    image: "https://images.unsplash.com/photo-1487700160041-babef9c3cb55?auto=format&fit=crop&w=800&q=80",
+    category: "Фотография",
+    delay: "450ms"
   }
 ];
 
-function GalleryItem({ image, title, number, delay }: typeof galleryItems[0]) {
-  const itemRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("appear");
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    if (itemRef.current) observer.observe(itemRef.current);
-
-    return () => {
-      if (itemRef.current) observer.unobserve(itemRef.current);
-    };
-  }, []);
-
-  return (
-    <div 
-      ref={itemRef} 
-      className="fade-in group cursor-pointer"
-      style={{ transitionDelay: delay }}
-    >
-      <div className="relative overflow-hidden">
-        <img 
-          src={image} 
-          alt={title} 
-          className="w-full aspect-[3/4] md:aspect-[5/6] object-cover transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
-          <p className="text-white/70 text-sm">{number}</p>
-          <h3 className="text-white text-xl font-medium">{title}</h3>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function GallerySection() {
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
   const buttonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -86,48 +47,80 @@ export default function GallerySection() {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: "0px 0px -10% 0px" }
     );
 
     if (titleRef.current) observer.observe(titleRef.current);
     if (buttonRef.current) observer.observe(buttonRef.current);
+    projectRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
 
     return () => {
       if (titleRef.current) observer.unobserve(titleRef.current);
       if (buttonRef.current) observer.unobserve(buttonRef.current);
+      projectRefs.current.forEach((ref) => {
+        if (ref) observer.unobserve(ref);
+      });
     };
   }, []);
 
+  const addToRefs = (el: HTMLDivElement | null, index: number) => {
+    if (el && !projectRefs.current.includes(el)) {
+      projectRefs.current[index] = el;
+    }
+  };
+
   return (
     <section className="py-24 bg-secondary/50">
-      <div className="container">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-          <h2 
-            ref={titleRef} 
-            className="text-3xl md:text-5xl font-serif font-bold text-primary fade-in"
-          >
-            последние работы
-            <span className="red-dot ml-2"></span>
+      <div className="container max-w-6xl">
+        <div 
+          ref={titleRef} 
+          className="mb-16 fade-in"
+        >
+          <h2 className="text-3xl md:text-5xl font-serif font-bold text-primary">
+            мои работы<span className="red-dot ml-2"></span>
           </h2>
-          <div 
-            ref={buttonRef} 
-            className="fade-in"
-            style={{ transitionDelay: "200ms" }}
-          >
-            <Button 
-              variant="link" 
-              className="text-foreground group p-0 h-auto text-lg font-normal"
-            >
-              <span>Смотреть все проекты</span>
-              <ChevronRight className="ml-1 h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Button>
-          </div>
         </div>
         
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-          {galleryItems.map((item, index) => (
-            <GalleryItem key={index} {...item} />
+        <div className="grid md:grid-cols-2 gap-8">
+          {projects.map((project, index) => (
+            <div
+              key={project.id}
+              ref={(el) => addToRefs(el, index)}
+              className="group relative fade-in overflow-hidden"
+              style={{ transitionDelay: project.delay }}
+            >
+              <div className="aspect-[4/3] overflow-hidden">
+                <img 
+                  src={project.image} 
+                  alt={project.title} 
+                  className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 transform group-hover:scale-105"
+                />
+              </div>
+              
+              <div className="absolute inset-0 flex flex-col justify-end p-6 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span className="text-white/70 text-sm mb-1">{project.category}</span>
+                <h3 className="text-white text-lg font-medium">{project.title}</h3>
+              </div>
+              
+              <div className="absolute top-4 left-4">
+                <span className="text-primary font-bold text-xl">{project.id}</span>
+              </div>
+            </div>
           ))}
+        </div>
+        
+        <div 
+          ref={buttonRef} 
+          className="mt-12 text-center fade-in"
+        >
+          <Button 
+            className="group rounded-none text-base font-normal"
+          >
+            <span>Смотреть все проекты</span>
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
         </div>
       </div>
     </section>
