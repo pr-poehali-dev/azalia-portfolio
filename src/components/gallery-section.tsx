@@ -1,12 +1,38 @@
 import { useEffect, useRef } from "react";
+import { ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
-import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
 
-export function GallerySection() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const elementsRef = useRef<(HTMLDivElement | null)[]>([]);
-  
+// Image data with unsplash links
+const galleryItems = [
+  {
+    image: "https://images.unsplash.com/photo-1611244419377-b0a760c19719?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80",
+    title: "Визуальная концепция",
+    number: "1",
+    delay: "0ms"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1581343600721-f4ea1318eccc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80",
+    title: "Документальная серия",
+    number: "2",
+    delay: "100ms"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1617791160505-6f00504e3519?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1756&q=80",
+    title: "Художественный проект",
+    number: "3",
+    delay: "200ms"
+  },
+  {
+    image: "https://images.unsplash.com/photo-1585508855751-7122ff0acee3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1746&q=80",
+    title: "Фотодневник",
+    number: "4",
+    delay: "300ms"
+  }
+];
+
+function GalleryItem({ image, title, number, delay }: typeof galleryItems[0]) {
+  const itemRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -16,75 +42,94 @@ export function GallerySection() {
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.1 }
     );
-    
-    elementsRef.current.forEach((el) => {
-      if (el) observer.observe(el);
-    });
-    
+
+    if (itemRef.current) observer.observe(itemRef.current);
+
     return () => {
-      elementsRef.current.forEach((el) => {
-        if (el) observer.unobserve(el);
-      });
+      if (itemRef.current) observer.unobserve(itemRef.current);
     };
   }, []);
-  
+
   return (
-    <section ref={sectionRef} className="py-16 md:py-24 bg-accent/50">
+    <div 
+      ref={itemRef} 
+      className="fade-in group cursor-pointer"
+      style={{ transitionDelay: delay }}
+    >
+      <div className="relative overflow-hidden">
+        <img 
+          src={image} 
+          alt={title} 
+          className="w-full aspect-[3/4] md:aspect-[5/6] object-cover transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
+          <p className="text-white/70 text-sm">{number}</p>
+          <h3 className="text-white text-xl font-medium">{title}</h3>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function GallerySection() {
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const buttonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("appear");
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    if (titleRef.current) observer.observe(titleRef.current);
+    if (buttonRef.current) observer.observe(buttonRef.current);
+
+    return () => {
+      if (titleRef.current) observer.unobserve(titleRef.current);
+      if (buttonRef.current) observer.unobserve(buttonRef.current);
+    };
+  }, []);
+
+  return (
+    <section className="py-24 bg-secondary/50">
       <div className="container">
-        <div 
-          ref={(el) => (elementsRef.current[0] = el)} 
-          className="fade-in text-center max-w-2xl mx-auto mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl font-serif font-light mb-4">Галерея работ</h2>
-          <p className="text-muted-foreground">
-            Избранные проекты и творческие эксперименты
-          </p>
-        </div>
-        
-        <div 
-          ref={(el) => (elementsRef.current[1] = el)} 
-          className="fade-in grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8"
-        >
-          {galleryImages.map((image, index) => (
-            <div 
-              key={index} 
-              className={`overflow-hidden rounded-lg ${
-                index === 0 ? "col-span-2 row-span-2" : ""
-              }`}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <h2 
+            ref={titleRef} 
+            className="text-3xl md:text-5xl font-serif font-bold text-primary fade-in"
+          >
+            последние работы
+            <span className="red-dot ml-2"></span>
+          </h2>
+          <div 
+            ref={buttonRef} 
+            className="fade-in"
+            style={{ transitionDelay: "200ms" }}
+          >
+            <Button 
+              variant="link" 
+              className="text-foreground group p-0 h-auto text-lg font-normal"
             >
-              <img 
-                src={image} 
-                alt={`Галерея ${index + 1}`} 
-                className="w-full h-full object-cover aspect-square transition-transform duration-500 hover:scale-105"
-              />
-            </div>
-          ))}
+              <span>Смотреть все проекты</span>
+              <ChevronRight className="ml-1 h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </div>
         </div>
         
-        <div 
-          ref={(el) => (elementsRef.current[2] = el)} 
-          className="fade-in text-center"
-          style={{ transitionDelay: "200ms" }}
-        >
-          <Button asChild>
-            <Link to="/about">
-              Смотреть все работы <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          {galleryItems.map((item, index) => (
+            <GalleryItem key={index} {...item} />
+          ))}
         </div>
       </div>
     </section>
   );
 }
-
-const galleryImages = [
-  "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1620812097331-511c0fc8d521?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
-  "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
-  "https://images.unsplash.com/photo-1581351721010-8cf859cb14a4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
-  "https://images.unsplash.com/photo-1575909812264-6902b55846ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
-];
-
-export default GallerySection;

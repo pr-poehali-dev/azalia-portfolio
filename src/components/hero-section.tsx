@@ -1,11 +1,13 @@
 import { useEffect, useRef } from "react";
-import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
 
-export function HeroSection() {
-  const elementsRef = useRef<(HTMLDivElement | null)[]>([]);
-  
+export default function HeroSection() {
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLParagraphElement>(null);
+  const buttonRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -15,79 +17,77 @@ export function HeroSection() {
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.1 }
     );
-    
-    elementsRef.current.forEach((el) => {
-      if (el) observer.observe(el);
-    });
-    
+
+    if (headingRef.current) observer.observe(headingRef.current);
+    if (imageRef.current) observer.observe(imageRef.current);
+    if (textRef.current) observer.observe(textRef.current);
+    if (buttonRef.current) observer.observe(buttonRef.current);
+
     return () => {
-      elementsRef.current.forEach((el) => {
-        if (el) observer.unobserve(el);
-      });
+      if (headingRef.current) observer.unobserve(headingRef.current);
+      if (imageRef.current) observer.unobserve(imageRef.current);
+      if (textRef.current) observer.unobserve(textRef.current);
+      if (buttonRef.current) observer.unobserve(buttonRef.current);
     };
   }, []);
-  
+
   return (
-    <section className="relative min-h-screen flex items-center pt-24 pb-20">
-      <div className="container grid md:grid-cols-2 gap-12 md:gap-8 items-center">
-        <div className="space-y-8 md:pr-8">
-          <div 
-            ref={(el) => (elementsRef.current[0] = el)} 
-            className="fade-in"
-          >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-light leading-tight text-balance">
-              Творчество как <span className="text-primary font-medium">путь</span> к осознанной жизни
-            </h1>
-          </div>
-          
-          <div 
-            ref={(el) => (elementsRef.current[1] = el)} 
-            className="fade-in"
-            style={{ transitionDelay: "100ms" }}
-          >
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-md">
-              Я исследую мир через искусство, находя красоту в простых вещах и 
-              делясь этим опытом с теми, кто ищет свой творческий путь.
-            </p>
-          </div>
-          
-          <div 
-            ref={(el) => (elementsRef.current[2] = el)} 
-            className="fade-in pt-4"
-            style={{ transitionDelay: "200ms" }}
-          >
-            <div className="flex flex-wrap gap-4">
-              <Button asChild size="lg">
-                <Link to="/courses">
-                  Мои курсы <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button variant="outline" size="lg" asChild>
-                <Link to="/about">Узнать больше</Link>
-              </Button>
+    <section className="min-h-screen pt-28 pb-16 flex items-center">
+      <div className="container">
+        <div className="grid md:grid-cols-7 gap-12 md:gap-6 items-center">
+          <div className="md:col-span-4 order-2 md:order-1">
+            <div className="space-y-8 max-w-2xl">
+              <h1 
+                ref={headingRef} 
+                className="text-4xl md:text-6xl lg:text-display font-serif font-bold leading-tight text-primary fade-in"
+              >
+                портфолио
+                <span className="red-dot ml-2"></span>
+              </h1>
+              
+              <p 
+                ref={textRef} 
+                className="text-lg md:text-xl text-foreground/90 max-w-xl fade-in"
+                style={{ transitionDelay: "200ms" }}
+              >
+                Я&nbsp;Азалия, исследую взаимосвязь творчества и&nbsp;осознанности. 
+                Через искусство, видеографию и&nbsp;дизайн я&nbsp;делюсь своим 
+                опытом и&nbsp;помогаю другим находить свой творческий путь.
+              </p>
+              
+              <div 
+                ref={buttonRef} 
+                className="fade-in"
+                style={{ transitionDelay: "400ms" }}
+              >
+                <Button 
+                  className="group rounded-none mt-4 text-base font-normal"
+                >
+                  <span>Мои проекты</span>
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-        
-        <div 
-          ref={(el) => (elementsRef.current[3] = el)} 
-          className="fade-in"
-          style={{ transitionDelay: "300ms" }}
-        >
-          <div className="relative aspect-[4/5] rounded-lg overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1519824145371-296894a0daa9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1350&q=80" 
-              alt="Азалия" 
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-primary/10"></div>
+          
+          <div 
+            ref={imageRef} 
+            className="md:col-span-3 order-1 md:order-2 fade-in"
+          >
+            <div className="relative">
+              <div className="absolute -top-3 -left-3 w-16 h-16 border border-primary"></div>
+              <img 
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80"
+                alt="Азалия" 
+                className="w-full aspect-[3/4] object-cover grayscale hover:grayscale-0 transition-all duration-700"
+              />
+              <div className="absolute -bottom-3 -right-3 w-16 h-16 border border-primary"></div>
+            </div>
           </div>
         </div>
       </div>
     </section>
   );
 }
-
-export default HeroSection;

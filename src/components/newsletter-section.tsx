@@ -1,12 +1,13 @@
-import { useState, useEffect, useRef, FormEvent } from "react";
+import { useEffect, useRef } from "react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 
-export function NewsletterSection() {
-  const [email, setEmail] = useState("");
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  
+export default function NewsletterSection() {
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const textRef = useRef<HTMLParagraphElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -16,67 +17,67 @@ export function NewsletterSection() {
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.1 }
     );
-    
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-    
+
+    if (titleRef.current) observer.observe(titleRef.current);
+    if (textRef.current) observer.observe(textRef.current);
+    if (formRef.current) observer.observe(formRef.current);
+
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
+      if (titleRef.current) observer.unobserve(titleRef.current);
+      if (textRef.current) observer.unobserve(textRef.current);
+      if (formRef.current) observer.unobserve(formRef.current);
     };
   }, []);
-  
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    // В реальном приложении здесь была бы отправка email на сервер
-    setIsSubscribed(true);
-    setEmail("");
-    setTimeout(() => {
-      setIsSubscribed(false);
-    }, 3000);
-  };
-  
+
   return (
-    <section className="py-16 md:py-24 bg-primary/5">
-      <div className="container">
-        <div 
-          ref={sectionRef} 
-          className="fade-in max-w-2xl mx-auto text-center"
-        >
-          <div className="mb-8">
-            <h2 className="text-3xl md:text-4xl font-serif font-light mb-4">
-              Подпишитесь на рассылку
-            </h2>
-            <p className="text-muted-foreground">
-              Получайте уведомления о новых курсах, статьях в блоге и творческих проектах
-            </p>
-          </div>
-          
-          {isSubscribed ? (
-            <div className="bg-primary/10 text-primary rounded-lg p-4 animate-fade-in">
-              Спасибо за подписку! Проверьте вашу почту для подтверждения.
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
-              <Input
-                type="email"
-                placeholder="Введите ваш email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="flex-1"
-              />
-              <Button type="submit">Подписаться</Button>
-            </form>
-          )}
+    <section className="py-24">
+      <div className="container max-w-3xl">
+        <div className="text-center mb-10">
+          <h2 
+            ref={titleRef} 
+            className="text-3xl md:text-5xl font-serif font-bold text-primary mb-6 fade-in"
+          >
+            рассылка
+            <span className="red-dot ml-2"></span>
+          </h2>
+          <p 
+            ref={textRef} 
+            className="text-lg text-foreground/80 max-w-2xl mx-auto fade-in"
+            style={{ transitionDelay: "100ms" }}
+          >
+            Подпишитесь на мою рассылку, чтобы получать новости о проектах, 
+            размышления о творческом процессе и анонсы будущих курсов.
+          </p>
         </div>
+        
+        <form 
+          ref={formRef} 
+          className="flex flex-col sm:flex-row gap-4 fade-in"
+          style={{ transitionDelay: "200ms" }}
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <Input 
+            type="email" 
+            placeholder="Ваш email" 
+            className="rounded-none border-primary/30 focus-visible:ring-primary" 
+            required
+          />
+          <Button 
+            type="submit" 
+            className="group rounded-none"
+          >
+            <span>Подписаться</span>
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
+        </form>
+        
+        <p className="text-xs text-foreground/60 mt-4 text-center">
+          Нажимая на кнопку, вы соглашаетесь с политикой конфиденциальности. 
+          Я обещаю не спамить и отправлять только самое интересное.
+        </p>
       </div>
     </section>
   );
 }
-
-export default NewsletterSection;
